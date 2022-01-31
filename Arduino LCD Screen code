@@ -1,0 +1,42 @@
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+#include <SoftwareSerial.h>
+SoftwareSerial SERGIOG(7, 8); 
+LiquidCrystal_I2C lcd(0x27,20,4);  
+
+void setup()
+{
+  lcd.init();  
+  lcd.backlight();   
+  lcd.setCursor ( 0, 0 );            
+  lcd.print("   Hello! "); 
+  lcd.setCursor ( 0, 1 );            
+  lcd.print("Holla"); 
+
+  
+  Serial.begin(9600);
+  
+  SERGIOG.begin(9600);
+}
+
+void loop() 
+{
+  SERGIOG.write("Testing...");
+  String data = SERGIOG.readString();
+  delay(1000);
+
+  if ( data != "") {
+    Serial.println(data);
+    lcd.setCursor ( 0, 3 );            
+    lcd.print(data);
+
+    int n = data.length();
+    Serial.print(n);
+    int i = 0;
+   char char_array[n + 1]; 
+    strcpy(char_array, data.c_str()); 
+    for (i = 0; i < n; i++) {
+      SERGIOG.write(char_array[i]);
+    }
+  }
+}
